@@ -1,7 +1,7 @@
 import { TimeZonedSchedule } from "../modules/TimeZonedSchedule";
 import moment from "moment-timezone";
 
-describe("TimeZonedSchedule", () => {
+describe("TimeZonedSchedule for Los Angeles", () => {
   let tzs: TimeZonedSchedule;
 
   beforeEach(() => {
@@ -42,25 +42,30 @@ describe("TimeZonedSchedule", () => {
       expect(events).toEqual(expect.arrayContaining(expectedUTC));
     });
   });
+
+  describe("Weekly Schedule", () => {
+    test("should generate weekly events for specified days", () => {
+      const startDate = "2024-03-03T08:00:00Z";
+      const endDate = "2024-03-16T06:59:59Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "weekly",
+        days: [1], // Monday
+        addDynamicOffset: true,
+        return: "timestamp",
+      });
+
+      const expectedLocalTimes = ["2024-03-04T00:00:00", "2024-03-11T00:00:00"];
+      const expectedUTC = ["2024-03-04T08:00:00", "2024-03-11T07:00:00"];
+      const localEvents = events.map((event) =>
+        tzs.utcToLocal(event, { return: "timestamp" })
+      );
+      expect(events).toHaveLength(2);
+      expect(localEvents).toEqual(expect.arrayContaining(expectedLocalTimes));
+      expect(events).toEqual(expect.arrayContaining(expectedUTC));
+    });
+  });
 });
-
-//   describe("Weekly Schedule", () => {
-//     test("should generate weekly events for specified days", () => {
-//       const startDate = "2024-01-01T00:00:00Z"; // Monday
-//       const endDate = "2024-01-07T00:00:00Z"; // Sunday
-
-//       const events = scheduler.schedule(startDate, endDate, {
-//         type: "weekly",
-//         days: [1, 3, 5], // Monday, Wednesday, Friday
-//         addDynamicOffset: true,
-//       });
-
-//       expect(events).toHaveLength(3);
-//       events.forEach((date) => {
-//         const day = moment(date).tz("America/New_York").day();
-//         expect([1, 3, 5]).toContain(day);
-//       });
-//     });
 
 //     test("should handle empty days array", () => {
 //       const startDate = "2024-01-01T00:00:00Z";
