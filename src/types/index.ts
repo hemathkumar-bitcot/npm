@@ -7,7 +7,7 @@ export type TimeZoneOptions = {
 export type DateType = Date | string | moment.Moment;
 
 export type Options = {
-  return?: ReturnType | "string";
+  return?: ReturnType | "string" | "Date";
   returnFormat?: string;
   timeZone?: string;
   inputFormat?: string;
@@ -32,4 +32,6 @@ export type ScheduleOptions = Options & {
     | { type: "daily" }
   );
 
-export type ReturnType = "date" | "moment" | "timestamp" | "time";
+export type ReturnType = "date" | "moment" | "timestamp" | "time" | "Date";
+
+export type FunctionReturnType = string | moment.Moment | Date;

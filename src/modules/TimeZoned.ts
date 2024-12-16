@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 import { isValidTimezone } from "../utils/validators";
 import { getTimezoneOffset } from "../utils/converters";
-import { Options } from "../types";
+import { Options, FunctionReturnType } from "../types";
 
 export class TimeZoned {
   protected options: Partial<Options>;
@@ -24,7 +24,7 @@ export class TimeZoned {
   utcToLocal(
     utcDate: Date | string | moment.Moment,
     options: Partial<Options> = this.options
-  ): string | moment.Moment {
+  ): FunctionReturnType {
     const timezone = options?.timeZone || this.timezone;
     if (!isValidTimezone(timezone)) {
       throw new Error(`Invalid timezone: ${timezone}`);
@@ -42,7 +42,7 @@ export class TimeZoned {
   localToUtc(
     date: Date | string,
     options: Partial<Options> = this.options
-  ): string | moment.Moment {
+  ): FunctionReturnType {
     const timezone = options.timeZone || this.timezone;
     if (!isValidTimezone(timezone)) {
       throw new Error(`Invalid timezone: ${timezone}`);
@@ -60,7 +60,7 @@ export class TimeZoned {
   protected handleReturn(
     momentObj: moment.Moment,
     options: Partial<Options> = this.options
-  ): string | moment.Moment {
+  ): FunctionReturnType {
     switch (options?.return) {
       case "date":
         return momentObj.format("YYYY-MM-DD");
@@ -70,6 +70,8 @@ export class TimeZoned {
         return momentObj.format("YYYY-MM-DDTHH:mm:ss");
       case "string":
         return momentObj.format(options?.returnFormat);
+      case "Date":
+        return momentObj.toDate();
       default:
         return momentObj;
     }
