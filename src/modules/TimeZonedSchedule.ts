@@ -107,7 +107,6 @@ export class TimeZonedSchedule extends TimeZoned {
     }
 
     while (currentDate.isSameOrBefore(moment(endDate))) {
-      console.log(currentDate);
       if (currentDate.date() === targetDay) {
         dates.push(
           this.addDynamicOffset(startDate, currentDate, timezone).toDate()
