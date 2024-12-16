@@ -125,4 +125,90 @@ describe("TimeZonedSchedule for New York", () => {
       }).toThrow();
     });
   });
+  //   add more then 10 test case for monthly schedule
+  describe("Monthly Schedule", () => {
+    test("should generate monthly events for specified date with DST adjustment", () => {
+      const startDate = "2024-03-03T05:00:00Z";
+      const endDate = "2024-03-16T03:59:59Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "monthly",
+        date: "2024-03-15",
+        addDynamicOffset: true,
+        return: "timestamp",
+      });
+
+      expect(events).toHaveLength(1);
+    });
+
+    test("should generate no events if the specified date is outside the range", () => {
+      const startDate = "2024-03-03T05:00:00Z";
+      const endDate = "2024-03-10T03:59:59Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "monthly",
+        date: "2024-03-15",
+        addDynamicOffset: true,
+        return: "timestamp",
+      });
+
+      expect(events).toHaveLength(0);
+    });
+
+    test("should generate multiple monthly events across different months", () => {
+      const startDate = "2024-01-01T05:00:00Z";
+      const endDate = "2024-05-01T03:59:59Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "monthly",
+        date: "2024-01-15",
+        addDynamicOffset: true,
+        return: "timestamp",
+      });
+
+      expect(events).toHaveLength(4);
+    });
+
+    test("should handle leap year correctly", () => {
+      const startDate = "2024-02-01T05:00:00Z";
+      const endDate = "2024-03-01T04:59:59Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "monthly",
+        date: "2024-02-29",
+        addDynamicOffset: true,
+        return: "timestamp",
+      });
+
+      expect(events).toHaveLength(1);
+    });
+
+    test("should handle non-leap year correctly", () => {
+      const startDate = "2023-02-01T05:00:00Z";
+      const endDate = "2023-03-01T04:59:59Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "monthly",
+        date: "2023-02-28",
+        addDynamicOffset: true,
+        return: "timestamp",
+      });
+
+      expect(events).toHaveLength(1);
+    });
+
+    test("should generate events for a specific day of the month", () => {
+      const startDate = "2024-01-01T05:00:00Z";
+      const endDate = "2024-12-31T04:59:59Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "monthly",
+        date: "2024-01-15",
+        addDynamicOffset: true,
+        return: "timestamp",
+      });
+
+      expect(events).toHaveLength(12);
+    });
+  });
 });
