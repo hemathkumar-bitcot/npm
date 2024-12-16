@@ -96,22 +96,21 @@ describe("TimeZonedSchedule for Los Angeles", () => {
       expect(localEvents).toEqual(expect.arrayContaining(expectedLocalTimes));
       expect(events).toEqual(expect.arrayContaining(expectedUTC));
     });
+
+    test("should handle empty days array", () => {
+      const startDate = "2024-01-01T00:00:00Z";
+      const endDate = "2024-01-07T00:00:00Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "weekly",
+        days: [],
+        addDynamicOffset: true,
+      });
+
+      expect(events).toHaveLength(0);
+    });
   });
 });
-
-//     test("should handle empty days array", () => {
-//       const startDate = "2024-01-01T00:00:00Z";
-//       const endDate = "2024-01-07T00:00:00Z";
-
-//       const events = scheduler.schedule(startDate, endDate, {
-//         type: "weekly",
-//         days: [],
-//         addDynamicOffset: true,
-//       });
-
-//       expect(events).toHaveLength(0);
-//     });
-//   });
 
 //   describe("Monthly Schedule", () => {
 //     test("should generate monthly events on specified date", () => {
