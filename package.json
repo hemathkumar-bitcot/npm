@@ -11,7 +11,8 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
-    "preversion": "npm run lint"
+    "preversion": "npm run lint",
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "timezone",
