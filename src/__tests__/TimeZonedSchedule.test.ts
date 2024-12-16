@@ -44,7 +44,7 @@ describe("TimeZonedSchedule for Los Angeles", () => {
   });
 
   describe("Weekly Schedule", () => {
-    test("should generate weekly events for specified days", () => {
+    test("should generate weekly events for specified days with DST adjustment", () => {
       const startDate = "2024-03-03T08:00:00Z";
       const endDate = "2024-03-16T06:59:59Z";
 
@@ -61,6 +61,38 @@ describe("TimeZonedSchedule for Los Angeles", () => {
         tzs.utcToLocal(event, { return: "timestamp" })
       );
       expect(events).toHaveLength(2);
+      expect(localEvents).toEqual(expect.arrayContaining(expectedLocalTimes));
+      expect(events).toEqual(expect.arrayContaining(expectedUTC));
+    });
+
+    test("should generate weekly events with DST adjustment", () => {
+      //
+      const startDate = "2024-03-09T08:00:00Z";
+      const endDate = "2024-03-12T06:59:59Z";
+
+      const events = tzs.schedule(startDate, endDate, {
+        type: "weekly",
+        days: [0, 1, 2, 3, 4, 5, 6],
+        addDynamicOffset: true,
+        return: "timestamp",
+      });
+
+      // Convert to local times for verification
+      const localEvents = events.map((event) =>
+        tzs.utcToLocal(event, { return: "timestamp" })
+      );
+
+      const expectedLocalTimes = [
+        "2024-03-09T00:00:00",
+        "2024-03-10T00:00:00",
+        "2024-03-11T00:00:00",
+      ];
+      const expectedUTC = [
+        "2024-03-09T08:00:00",
+        "2024-03-10T08:00:00",
+        "2024-03-11T07:00:00",
+      ];
+      expect(events).toHaveLength(3);
       expect(localEvents).toEqual(expect.arrayContaining(expectedLocalTimes));
       expect(events).toEqual(expect.arrayContaining(expectedUTC));
     });
