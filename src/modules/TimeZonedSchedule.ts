@@ -38,9 +38,7 @@ export class TimeZonedSchedule extends TimeZoned {
         this.timezone,
         options
       );
-    }
-
-    if (options.type === "monthly") {
+    } else if (options.type === "monthly") {
       events = this.monthlyEvents(
         options.date,
         startDate,
@@ -51,9 +49,7 @@ export class TimeZonedSchedule extends TimeZoned {
       events = this.dailyEvents(startDate, endDate, this.timezone, options);
     }
 
-    return events.map((event) =>
-      this.handleReturn(moment.utc(event), options)
-    );
+    return events.map((event) => this.handleReturn(moment.utc(event), options));
   }
 
   private dailyEvents(
