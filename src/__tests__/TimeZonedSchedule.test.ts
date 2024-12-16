@@ -110,6 +110,22 @@ describe("TimeZonedSchedule for Los Angeles", () => {
       expect(events).toHaveLength(0);
     });
   });
+
+  describe("Error Handling", () => {
+    test("should handle invalid date range", () => {
+      const startDate = "2024-01-02T00:00:00Z";
+      const endDate = "2024-01-01T00:00:00Z";
+
+      const events = tzs.schedule(startDate, endDate);
+      expect(events).toHaveLength(0);
+    });
+
+    test("should handle invalid timezone", () => {
+      expect(() => {
+        new TimeZonedSchedule({ timeZone: "Invalid/Timezone" });
+      }).toThrow();
+    });
+  });
 });
 
 //   describe("Monthly Schedule", () => {
@@ -188,21 +204,5 @@ describe("TimeZonedSchedule for Los Angeles", () => {
 //       expect(formattedDates[0]).toBe("2024-11-02 00:00");
 //       expect(formattedDates[1]).toBe("2024-11-03 00:00");
 //       expect(formattedDates[2]).toBe("2024-11-04 00:00");
-//     });
-//   });
-
-//   describe("Error Handling", () => {
-//     test("should handle invalid date range", () => {
-//       const startDate = "2024-01-02T00:00:00Z";
-//       const endDate = "2024-01-01T00:00:00Z";
-
-//       const events = scheduler.schedule(startDate, endDate);
-//       expect(events).toHaveLength(0);
-//     });
-
-//     test("should handle invalid timezone", () => {
-//       expect(() => {
-//         new TimeZonedSchedule({ timezone: "Invalid/Timezone" });
-//       }).toThrow();
 //     });
 //   });
