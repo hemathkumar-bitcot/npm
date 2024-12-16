@@ -30,18 +30,7 @@ export class TimeZoned {
       throw new Error(`Invalid timezone: ${timezone}`);
     }
     const momentObj = moment.utc(utcDate).tz(timezone);
-    switch (options?.return) {
-      case "date":
-        return momentObj.format("YYYY-MM-DD");
-      case "time":
-        return momentObj.format("HH:mm:ss");
-      case "timestamp":
-        return momentObj.format("YYYY-MM-DDTHH:mm:ss");
-      case "string":
-        return momentObj.format(options?.returnFormat);
-      default:
-        return momentObj;
-    }
+    return this.handleReturn(momentObj, options);
   }
 
   /**
@@ -65,7 +54,13 @@ export class TimeZoned {
     } else {
       momentObj = moment.tz(date, timezone).utc();
     }
+    return this.handleReturn(momentObj, options);
+  }
 
+  protected handleReturn(
+    momentObj: moment.Moment,
+    options: Partial<Options> = this.options
+  ): string | moment.Moment {
     switch (options?.return) {
       case "date":
         return momentObj.format("YYYY-MM-DD");
