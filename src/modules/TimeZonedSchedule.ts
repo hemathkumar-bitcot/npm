@@ -25,12 +25,13 @@ export class TimeZonedSchedule extends TimeZoned {
       type: "daily",
       addDynamicOffset: true,
     }
-  ): Date[] {
+  ): (Date | string | moment.Moment)[] {
     const startDate = moment.utc(start);
     const endDate = moment.utc(end);
 
+    let events: Date[] = [];
     if (options.type === "weekly") {
-      return this.weeklyEvents(
+      events = this.weeklyEvents(
         startDate,
         endDate,
         options.days.map((day) => day as number),
@@ -40,15 +41,19 @@ export class TimeZonedSchedule extends TimeZoned {
     }
 
     if (options.type === "monthly") {
-      return this.monthlyEvents(
+      events = this.monthlyEvents(
         options.date,
         startDate,
         endDate,
         this.timezone
       );
     } else {
-      return this.dailyEvents(startDate, endDate, this.timezone, options);
+      events = this.dailyEvents(startDate, endDate, this.timezone, options);
     }
+
+    return events.map((event) =>
+      this.handleReturn(moment.utc(event), options)
+    );
   }
 
   private dailyEvents(
