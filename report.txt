@@ -1,0 +1,27 @@
+community-node
+Admin Flow
+    - Implemented a Firebase function to trigger a webhook when a user registers for the app and requires admin approval.
+    - The webhook is configured to send emails to the respective users, notifying them about the status of their registration request.
+
+GraphQL Module
+    - Removed the use of HttpException and HttpStatus for improved code maintainability and consistency.
+    - Sponsor Module
+    - Announcements module
+
+Password Management
+    - Added Firebase reset password validation.
+
+RFID
+    - Added test cases for Tag and Asset Resolvers and Services.
+    - Corrected resolver names and integrated async/await.
+    - Implemented error constants in Tag and Asset Service modules.
+    - Merged all branches and created mock test files.
+    - Linked "Create Asset" and "Create Tag" services to respective APIs.
+    - Added "Check-In" and "Check-Out" activity functions to APIs.
+    - Updated user test files and the Activity entity.
+
+NPM Package creation
+    - started the npm package(timezoned) 
+    - base setup for the package
+    - implemented timzone conversion function utc to local
+    
