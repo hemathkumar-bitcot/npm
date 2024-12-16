@@ -59,21 +59,15 @@ export class TimeZonedSchedule extends TimeZoned {
   ): Date[] {
     const dates: Date[] = [];
     const currentDate = startDate.clone();
-
-    console.log(startDate);
-    console.log(endDate);
-
-    const isDst = moment.tz(currentDate, timezone).isDST();
-
     while (currentDate.isSameOrBefore(endDate)) {
       if (options.addDynamicOffset) {
-        const date = this.addDynamicOffset(startDate, currentDate, timezone);
-        dates.push(date.toDate());
+        dates.push(
+          this.addDynamicOffset(startDate, currentDate, timezone).toDate()
+        );
       } else {
         dates.push(currentDate.toDate());
       }
       currentDate.add(1, "day");
-      console.log(currentDate);
     }
     return dates;
   }
