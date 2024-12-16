@@ -14,22 +14,28 @@ describe("TimeZonedSchedule", () => {
     test("should generate daily events with DST adjustment", () => {
       // March 10, 2024 is when DST begins in America/New_York
       const startDate = "2024-03-09T08:00:00Z";
-      const endDate = "2024-03-11T08:00:00Z";
+      const endDate = "2024-03-12T06:59:59Z";
 
       const events = tzs.schedule(startDate, endDate, {
         type: "daily",
         addDynamicOffset: true,
       });
 
+      // First, verify we have the correct number of events
       expect(events).toHaveLength(3);
 
-      // Verify DST adjustment
+      // Convert to local times for verification
       const localEvents = events.map((event) =>
-        tzs.utcToLocal(event, { return: "time" })
+        tzs.utcToLocal(event, { return: "timestamp" })
       );
-      expect(localEvents[0]).toBe(
-        moment(startDate).tz("America/New_York").format("HH:mm:ss")
-      );
+
+      // Expected local times (3:00 AM EST on March 9, then 3:00 AM EDT on March 10-11)
+      const expectedLocalTimes = [
+        "2024-03-09T03:00:00", // March 9 - EST
+        "2024-03-10T03:00:00", // March 10 - EDT (after spring forward)
+        "2024-03-11T03:00:00", // March 11 - EDT
+      ];
+      expect(localEvents).toEqual(expect.arrayContaining(expectedLocalTimes));
     });
   });
 
