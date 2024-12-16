@@ -6,54 +6,42 @@ describe("TimeZonedSchedule", () => {
 
   beforeEach(() => {
     tzs = new TimeZonedSchedule({
-      timeZone: "America/New_York",
+      timeZone: "America/Los_Angeles",
     });
   });
 
   describe("Daily Schedule", () => {
     test("should generate daily events with DST adjustment", () => {
-      // March 10, 2024 is when DST begins in America/New_York
+      //
       const startDate = "2024-03-09T08:00:00Z";
       const endDate = "2024-03-12T06:59:59Z";
 
       const events = tzs.schedule(startDate, endDate, {
         type: "daily",
         addDynamicOffset: true,
+        return: "timestamp",
       });
-
-      // First, verify we have the correct number of events
-      expect(events).toHaveLength(3);
 
       // Convert to local times for verification
       const localEvents = events.map((event) =>
         tzs.utcToLocal(event, { return: "timestamp" })
       );
 
-      // Expected local times (3:00 AM EST on March 9, then 3:00 AM EDT on March 10-11)
       const expectedLocalTimes = [
-        "2024-03-09T03:00:00", // March 9 - EST
-        "2024-03-10T03:00:00", // March 10 - EDT (after spring forward)
-        "2024-03-11T03:00:00", // March 11 - EDT
+        "2024-03-09T00:00:00",
+        "2024-03-10T00:00:00",
+        "2024-03-11T00:00:00",
       ];
+      const expectedUTC = [
+        "2024-03-09T08:00:00",
+        "2024-03-10T08:00:00",
+        "2024-03-11T07:00:00",
+      ];
+      expect(events).toHaveLength(3);
       expect(localEvents).toEqual(expect.arrayContaining(expectedLocalTimes));
+      expect(events).toEqual(expect.arrayContaining(expectedUTC));
     });
   });
-
-  // test("should generate daily events without DST adjustment", () => {
-  //   const startDate = "2024-03-09T00:00:00Z";
-  //   const endDate = "2024-03-11T00:00:00Z";
-
-  //   const events = scheduler.schedule(startDate, endDate, {
-  //     type: "daily",
-  //     addDynamicOffset: false,
-  //   });
-
-  //   expect(events).toHaveLength(3);
-  //   // Times should be exactly 24 hours apart without DST adjustment
-  //   const intervals = events.map((date) => moment(date).valueOf());
-  //   expect(intervals[1] - intervals[0]).toBe(24 * 60 * 60 * 1000);
-  //   expect(intervals[2] - intervals[1]).toBe(24 * 60 * 60 * 1000);
-  // });
 });
 
 //   describe("Weekly Schedule", () => {
