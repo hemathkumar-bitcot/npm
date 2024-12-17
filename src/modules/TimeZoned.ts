@@ -1,4 +1,8 @@
-import moment from "moment-timezone";
+import moment, {
+  DurationInputArg1,
+  DurationInputArg2,
+  MomentInputObject,
+} from "moment-timezone";
 import { isValidTimezone } from "../utils/validators";
 import { getTimezoneOffset } from "../utils/converters";
 import { Options, FunctionReturnType } from "../types";
@@ -56,6 +60,65 @@ export class TimeZoned {
     } else {
       momentObj = moment.tz(date, timezone).utc();
     }
+    return this.handleReturn(momentObj, options);
+  }
+
+  setDateTime(
+    date: Date | string | moment.Moment,
+    amount: string | number,
+    unit:
+      | "HH:mm:ss"
+      | "HH:mm"
+      | "HH"
+      | "minute"
+      | "hour"
+      | "day"
+      | "month"
+      | "year",
+    type: "local" | "utc",
+    ways: "subtract" | "startOf" | "endOf" = "startOf",
+    options: Options = this.options
+  ) {
+    let momentObj: moment.Moment;
+    if (type === "local") {
+      momentObj = moment.tz(date, this.timezone);
+    } else {
+      momentObj = moment.utc(date);
+    }
+
+    if (ways === "startOf") {
+      momentObj.startOf("day");
+    } else if (ways === "endOf") {
+      momentObj.endOf("day");
+    }
+
+    // if time matched inputFormat, convert it to moment object
+    if (typeof amount === "string" && unit === "HH:mm:ss") {
+      const [hours, minutes, seconds] = amount.split(":").map(Number);
+      momentObj = moment(date).set({ hours, minutes, seconds });
+    } else if (typeof amount === "string" && unit === "HH:mm") {
+      const [hours, minutes] = amount.split(":").map(Number);
+      momentObj = moment(date).set({ hours, minutes });
+    } else if (unit === "HH") {
+      const hours = Number(amount);
+      momentObj = moment(date).set({ hours });
+    } else if (unit === "minute") {
+      const minutes = Number(amount);
+      momentObj = moment(date).set({ minutes });
+    } else if (unit === "hour") {
+      const hours = Number(amount);
+      momentObj = moment(date).set({ hours });
+    } else if (unit === "day") {
+      const day = Number(amount);
+      momentObj = moment(date).set({ day });
+    } else if (unit === "month") {
+      const month = Number(amount);
+      momentObj = moment(date).set({ month });
+    } else if (unit === "year") {
+      const year = Number(amount);
+      momentObj = moment(date).set({ year });
+    }
+
     return this.handleReturn(momentObj, options);
   }
 
