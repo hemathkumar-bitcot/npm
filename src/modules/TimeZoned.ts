@@ -116,6 +116,58 @@ export class TimeZoned {
     return this.handleReturn(momentObj, options);
   }
 
+  addDateTime(
+    date: Date | string | moment.Moment,
+    amount: string | number,
+    unit: "HH:mm:ss" | "HH:mm" | "minute" | "hour" | "day" | "month" | "year",
+    type: "local" | "utc",
+    from:
+      | "startOfDay"
+      | "endOfDay"
+      | "startOfMonth"
+      | "endOfMonth"
+      | "startOfYear"
+      | "endOfYear",
+    options: Options = this.options
+  ) {
+    let momentObj: moment.Moment;
+    if (type === "local") {
+      momentObj = moment.tz(date, this.timezone);
+    } else {
+      momentObj = moment.utc(date);
+    }
+
+    if (from === "startOfDay") {
+      momentObj = momentObj.startOf("day");
+    } else if (from === "endOfDay") {
+      momentObj = momentObj.endOf("day");
+    } else if (from === "startOfMonth") {
+      momentObj = momentObj.startOf("month");
+    } else if (from === "endOfMonth") {
+      momentObj = momentObj.endOf("month");
+    } else if (from === "startOfYear") {
+      momentObj = momentObj.startOf("year");
+    } else if (from === "endOfYear") {
+      momentObj = momentObj.endOf("year");
+    }
+
+    const units = ["minute", "hour", "day", "month", "year"];
+    if (typeof amount === "string" && amount.includes(":")) {
+      const [hours, minutes, seconds] = amount.split(":").map(Number);
+      momentObj = momentObj
+        .add(hours, "hours")
+        .add(minutes, "minutes")
+        .add(seconds || 0, "seconds");
+    } else if (typeof amount === "number" && units.includes(unit)) {
+      momentObj = momentObj.add(
+        amount,
+        unit as moment.unitOfTime.DurationConstructor
+      );
+    }
+
+    return this.handleReturn(momentObj, options);
+  }
+
   protected handleReturn(
     momentObj: moment.Moment,
     options: Options = this.options
