@@ -2,7 +2,7 @@
 
 import { TimeZoned } from "../../modules/TimeZoned";
 import moment from "moment-timezone";
-import { Options } from "../../types";
+import { Options, SetOptions } from "../../types";
 
 describe("setDateTime Tests", () => {
   let tz: TimeZoned;
@@ -199,7 +199,7 @@ describe("setDateTime Tests", () => {
           amount,
           unit,
           type as "local" | "utc",
-          options as Options
+          options as SetOptions
         );
         expect(result).toBe(expected);
       });

@@ -21,6 +21,19 @@ export type Options =
       inputFormat?: string | "HH:mm:ss";
     };
 
+export type SetOptions =
+  | {
+      return: "string";
+      returnFormat: string | "12" | "24";
+      timeZone?: string;
+    }
+  | {
+      return: ReturnType;
+      timeZone?: string;
+    };
+
+export type AddOptions = SetOptions;
+
 export type ScheduleOptions = Options & {
   addDynamicOffset?: boolean;
 } & (

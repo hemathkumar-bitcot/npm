@@ -1,6 +1,6 @@
 import { TimeZoned } from "../../modules/TimeZoned";
 import moment from "moment-timezone";
-import { Options } from "../../types";
+import { AddOptions, Options } from "../../types";
 
 describe("addDateTime Tests", () => {
   let tz: TimeZoned;
@@ -148,7 +148,7 @@ describe("addDateTime Tests", () => {
             | "endOfMonth"
             | "startOfYear"
             | "endOfYear",
-          options as Options
+          options as AddOptions
         );
         expect(result).toBe(expected);
       });

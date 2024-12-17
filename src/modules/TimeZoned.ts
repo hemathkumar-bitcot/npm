@@ -5,7 +5,13 @@ import moment, {
 } from "moment-timezone";
 import { isValidTimezone } from "../utils/validators";
 import { getTimezoneOffset } from "../utils/converters";
-import { Options, FunctionReturnType } from "../types";
+import {
+  Options,
+  FunctionReturnType,
+  AddOptions,
+  ReturnType,
+  SetOptions,
+} from "../types";
 
 export class TimeZoned {
   protected options: Options;
@@ -76,7 +82,9 @@ export class TimeZoned {
       | "month"
       | "year",
     type: "local" | "utc",
-    options: Options = this.options
+    options: SetOptions = {
+      ...(this.options as SetOptions),
+    }
   ) {
     let momentObj: moment.Moment;
     if (type === "local") {
@@ -128,7 +136,9 @@ export class TimeZoned {
       | "endOfMonth"
       | "startOfYear"
       | "endOfYear",
-    options: Options = this.options
+    options: AddOptions = {
+      ...(this.options as AddOptions),
+    }
   ) {
     let momentObj: moment.Moment;
     if (type === "local") {
