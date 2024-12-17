@@ -1,4 +1,4 @@
-import { TimeZonedSchedule } from "../modules/TimeZonedSchedule";
+import { TimeZonedSchedule } from "../../modules/TimeZonedSchedule";
 import moment from "moment-timezone";
 
 describe("TimeZonedSchedule General Tests", () => {
