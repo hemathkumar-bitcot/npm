@@ -91,32 +91,31 @@ export class TimeZoned {
     } else if (ways === "endOf") {
       momentObj.endOf("day");
     }
-
     // if time matched inputFormat, convert it to moment object
     if (typeof amount === "string" && unit === "HH:mm:ss") {
       const [hours, minutes, seconds] = amount.split(":").map(Number);
-      momentObj = moment(date).set({ hours, minutes, seconds });
+      momentObj = momentObj.set({ hours, minutes, seconds });
     } else if (typeof amount === "string" && unit === "HH:mm") {
       const [hours, minutes] = amount.split(":").map(Number);
-      momentObj = moment(date).set({ hours, minutes });
+      momentObj = momentObj.set({ hours, minutes });
     } else if (unit === "HH") {
       const hours = Number(amount);
-      momentObj = moment(date).set({ hours });
+      momentObj = momentObj.set({ hours });
     } else if (unit === "minute") {
       const minutes = Number(amount);
-      momentObj = moment(date).set({ minutes });
+      momentObj = momentObj.set({ minutes });
     } else if (unit === "hour") {
       const hours = Number(amount);
-      momentObj = moment(date).set({ hours });
+      momentObj = momentObj.set({ hours });
     } else if (unit === "day") {
       const day = Number(amount);
-      momentObj = moment(date).set({ day });
+      momentObj = momentObj.set({ day });
     } else if (unit === "month") {
       const month = Number(amount);
-      momentObj = moment(date).set({ month });
+      momentObj = momentObj.set({ month });
     } else if (unit === "year") {
       const year = Number(amount);
-      momentObj = moment(date).set({ year });
+      momentObj = momentObj.set({ year });
     }
 
     return this.handleReturn(momentObj, options);
