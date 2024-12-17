@@ -76,7 +76,6 @@ export class TimeZoned {
       | "month"
       | "year",
     type: "local" | "utc",
-    ways: "subtract" | "startOf" | "endOf" = "startOf",
     options: Options = this.options
   ) {
     let momentObj: moment.Moment;
@@ -86,11 +85,7 @@ export class TimeZoned {
       momentObj = moment.utc(date);
     }
 
-    if (ways === "startOf") {
-      momentObj.startOf("day");
-    } else if (ways === "endOf") {
-      momentObj.endOf("day");
-    }
+    momentObj = momentObj.startOf("day");
     // if time matched inputFormat, convert it to moment object
     if (typeof amount === "string" && unit === "HH:mm:ss") {
       const [hours, minutes, seconds] = amount.split(":").map(Number);
