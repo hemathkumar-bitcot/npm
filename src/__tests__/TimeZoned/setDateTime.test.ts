@@ -2,6 +2,7 @@
 
 import { TimeZoned } from "../../modules/TimeZoned";
 import moment from "moment-timezone";
+import { Options } from "../../types";
 
 describe("setDateTime Tests", () => {
   let tz: TimeZoned;
@@ -11,190 +12,197 @@ describe("setDateTime Tests", () => {
     tz = new TimeZoned({ timeZone: "UTC" });
   });
 
-  describe("Time Setting Tests", () => {
-    test("should set HH:mm:ss format", () => {
-      const date = "2024-01-01T00:00:00";
-      const result = tz.setDateTime(date, "14:30:45", "HH:mm:ss", "local", {
-        return: "timestamp",
+  const testCases = [
+    {
+      description: "should set HH:mm:ss format",
+      date: "2024-01-01T00:00:00",
+      amount: "14:30:45",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T14:30:45",
+    },
+    {
+      description: "should set HH:mm format",
+      date: "2024-01-01T00:00:00",
+      amount: "14:30",
+      unit: "HH:mm" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T14:30:00",
+    },
+    {
+      description: "should set hour (HH)",
+      date: "2024-01-01T00:00:00",
+      amount: 14,
+      unit: "HH" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T14:00:00",
+    },
+    {
+      description: "should set minute",
+      date: "2024-01-01T00:00:00",
+      amount: 30,
+      unit: "minute" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T00:30:00",
+    },
+    {
+      description: "should set hour",
+      date: "2024-01-01T00:00:00",
+      amount: 14,
+      unit: "hour" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T14:00:00",
+    },
+    {
+      description: "should set day",
+      date: "2024-01-01T00:00:00",
+      amount: 15,
+      unit: "day" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-15T00:00:00",
+    },
+    {
+      description: "should set month",
+      date: "2024-01-01T00:00:00",
+      amount: 6,
+      unit: "month" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-07-01T00:00:00",
+    },
+    {
+      description: "should set year",
+      date: "2024-01-01T00:00:00",
+      amount: 2025,
+      unit: "year" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2025-01-01T00:00:00",
+    },
+    {
+      description: "should handle startOf day",
+      date: testDate,
+      amount: 14,
+      unit: "hour" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T14:00:00",
+    },
+    {
+      description: "should handle local type",
+      date: testDate,
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T09:00:00",
+    },
+    {
+      description: "should handle UTC type",
+      date: testDate,
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "utc",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T09:00:00",
+    },
+    {
+      description: "should handle Date object input",
+      date: new Date("2024-01-01T14:30:45"),
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T09:00:00",
+    },
+    {
+      description: "should handle moment object input",
+      date: moment("2024-01-01T14:30:45"),
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      expected: "2024-01-01T09:00:00",
+    },
+    {
+      description: "should handle different return formats (date)",
+      date: testDate,
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "date" },
+      expected: "2024-01-01",
+    },
+    {
+      description: "should handle different return formats (time)",
+      date: testDate,
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "time" },
+      expected: "09:00:00",
+    },
+    {
+      description: "should handle different return formats (custom)",
+      date: testDate,
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "string", returnFormat: "MM/DD/YYYY HH:mm:ss" },
+      expected: "01/01/2024 09:00:00",
+    },
+    {
+      description: "should handle different timezones (New York)",
+      date: testDate,
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      timeZone: "America/New_York",
+      expected: "2024-01-01T09:00:00",
+    },
+    {
+      description: "should handle different timezones (Tokyo)",
+      date: testDate,
+      amount: "09:00:00",
+      unit: "HH:mm:ss" as const,
+      type: "local",
+      options: { return: "timestamp" },
+      timeZone: "Asia/Tokyo",
+      expected: "2024-01-01T09:00:00",
+    },
+  ];
+
+  testCases.forEach(
+    ({
+      description,
+      date,
+      amount,
+      unit,
+      type,
+      options,
+      timeZone,
+      expected,
+    }) => {
+      test(description, () => {
+        if (timeZone) {
+          tz = new TimeZoned({ timeZone });
+        }
+        const result = tz.setDateTime(
+          date,
+          amount,
+          unit,
+          type as "local" | "utc",
+          options as Options
+        );
+        expect(result).toBe(expected);
       });
-      expect(result).toBe("2024-01-01T14:30:45");
-    });
-
-    test("should set HH:mm format", () => {
-      const date = "2024-01-01T00:00:00";
-      const result = tz.setDateTime(date, "14:30", "HH:mm", "local", {
-        return: "timestamp",
-      });
-      expect(result).toBe("2024-01-01T14:30:00");
-    });
-
-    test("should set hour (HH)", () => {
-      const date = "2024-01-01T00:00:00";
-      const result = tz.setDateTime(date, 14, "HH", "local", {
-        return: "timestamp",
-      });
-      expect(result).toBe("2024-01-01T14:00:00");
-    });
-  });
-
-  describe("Unit Setting Tests", () => {
-    test("should set minute", () => {
-      const date = "2024-01-01T00:00:00";
-      const result = tz.setDateTime(date, 30, "minute", "local", {
-        return: "timestamp",
-      });
-      expect(result).toBe("2024-01-01T00:30:00");
-    });
-
-    test("should set hour", () => {
-      const date = "2024-01-01T00:00:00";
-      const result = tz.setDateTime(date, 14, "hour", "local", {
-        return: "timestamp",
-      });
-      expect(result).toBe("2024-01-01T14:00:00");
-    });
-
-    test("should set day", () => {
-      const date = "2024-01-01T00:00:00";
-      const result = tz.setDateTime(date, 15, "day", "local", {
-        return: "timestamp",
-      });
-      expect(result).toBe("2024-01-15T00:00:00");
-    });
-
-    test("should set month", () => {
-      const date = "2024-01-01T00:00:00";
-      const result = tz.setDateTime(date, 6, "month", "local", {
-        return: "timestamp",
-      });
-      expect(result).toBe("2024-07-01T00:00:00");
-    });
-
-    test("should set year", () => {
-      const date = "2024-01-01T00:00:00";
-      const result = tz.setDateTime(date, 2025, "year", "local", {
-        return: "timestamp",
-      });
-      expect(result).toBe("2025-01-01T00:00:00");
-    });
-  });
-
-  describe("Ways Parameter Tests", () => {
-    test("should handle startOf day", () => {
-      const result = tz.setDateTime(testDate, 14, "hour", "local", {
-        return: "timestamp",
-      });
-      console.log(result);
-      expect(result).toBe("2024-01-01T14:00:00");
-    });
-
-    test("should handle local type", () => {
-      const result = tz.setDateTime(
-        testDate,
-        "09:00:00",
-        "HH:mm:ss",
-        "local",
-        { return: "timestamp" }
-      );
-      expect(result).toBe("2024-01-01T09:00:00");
-    });
-
-    test("should handle UTC type", () => {
-      const result = tz.setDateTime(
-        testDate,
-        "09:00:00",
-        "HH:mm:ss",
-        "utc",
-        { return: "timestamp" }
-      );
-      expect(result).toBe("2024-01-01T09:00:00");
-    });
-  });
-
-  describe("Input Format Tests", () => {
-    test("should handle Date object input", () => {
-      const dateObj = new Date("2024-01-01T14:30:45");
-      const result = tz.setDateTime(
-        dateObj,
-        "09:00:00",
-        "HH:mm:ss",
-        "local",
-        { return: "timestamp" }
-      );
-      expect(result).toBe("2024-01-01T09:00:00");
-    });
-
-    test("should handle moment object input", () => {
-      const momentObj = moment("2024-01-01T14:30:45");
-      const result = tz.setDateTime(
-        momentObj,
-        "09:00:00",
-        "HH:mm:ss",
-        "local",
-        { return: "timestamp" }
-      );
-      expect(result).toBe("2024-01-01T09:00:00");
-    });
-  });
-
-  describe("Return Format Tests", () => {
-    test("should handle different return formats", () => {
-      // Test date return
-      const dateResult = tz.setDateTime(
-        testDate,
-        "09:00:00",
-        "HH:mm:ss",
-        "local",
-        { return: "date" }
-      );
-      expect(dateResult).toBe("2024-01-01");
-
-      // Test time return
-      const timeResult = tz.setDateTime(
-        testDate,
-        "09:00:00",
-        "HH:mm:ss",
-        "local",
-        { return: "time" }
-      );
-      expect(timeResult).toBe("09:00:00");
-
-      // Test custom format return
-      const customResult = tz.setDateTime(
-        testDate,
-        "09:00:00",
-        "HH:mm:ss",
-        "local",
-        { return: "string", returnFormat: "MM/DD/YYYY HH:mm:ss" }
-      );
-      expect(customResult).toBe("01/01/2024 09:00:00");
-    });
-  });
-
-  describe("Timezone Tests", () => {
-    test("should handle different timezones", () => {
-      const tzNY = new TimeZoned({ timeZone: "America/New_York" });
-      const tzTokyo = new TimeZoned({ timeZone: "Asia/Tokyo" });
-
-      // Test New York timezone
-      const nyResult = tzNY.setDateTime(
-        testDate,
-        "09:00:00",
-        "HH:mm:ss",
-        "local",
-        { return: "timestamp" }
-      );
-      expect(nyResult).toBe("2024-01-01T09:00:00");
-
-      // Test Tokyo timezone
-      const tokyoResult = tzTokyo.setDateTime(
-        testDate,
-        "09:00:00",
-        "HH:mm:ss",
-        "local",
-        { return: "timestamp" }
-      );
-      expect(tokyoResult).toBe("2024-01-01T09:00:00");
-    });
-  });
+    }
+  );
 });
