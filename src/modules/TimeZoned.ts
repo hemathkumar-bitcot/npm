@@ -29,7 +29,8 @@ export class TimeZoned {
     if (!isValidTimezone(timezone)) {
       throw new Error(`Invalid timezone: ${timezone}`);
     }
-    const momentObj = moment.utc(utcDate).tz(timezone);
+    const inputFormat = options?.inputFormat || "YYYY-MM-DDTHH:mm:ss";
+    const momentObj = moment.utc(utcDate, inputFormat).tz(timezone);
     return this.handleReturn(momentObj, options);
   }
 
@@ -50,30 +51,11 @@ export class TimeZoned {
 
     let momentObj: moment.Moment;
     if (typeof date === "string" && options?.inputFormat) {
-      momentObj = moment.tz(date, options.inputFormat, timezone).utc();
+      const inputFormat = options.inputFormat || "YYYY-MM-DDTHH:mm:ss";
+      momentObj = moment.tz(date, inputFormat, timezone).utc();
     } else {
       momentObj = moment.tz(date, timezone).utc();
     }
-    return this.handleReturn(momentObj, options);
-  }
-
-  localTimeToUtc(
-    time: string,
-    options: Options = this.options
-  ): FunctionReturnType {
-    const timezone = options.timeZone || this.timezone;
-    if (!isValidTimezone(timezone)) {
-      throw new Error(`Invalid timezone: ${timezone}`);
-    }
-    const momentObj = moment.tz(time, "HH:mm:ss", timezone).utc();
-    return this.handleReturn(momentObj, options);
-  }
-
-  utcTimeToLocal(
-    time: string,
-    options: Options = this.options
-  ): FunctionReturnType {
-    const momentObj = moment.utc(time).tz(this.timezone);
     return this.handleReturn(momentObj, options);
   }
 

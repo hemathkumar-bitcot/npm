@@ -18,7 +18,7 @@ export type Options =
       return: "string";
       returnFormat: string | "12" | "24";
       timeZone?: string;
-      inputFormat?: string;
+      inputFormat?: string | "HH:mm:ss";
     };
 
 export type ScheduleOptions = Options & {
