@@ -6,12 +6,20 @@ export type TimeZoneOptions = {
 
 export type DateType = Date | string | moment.Moment;
 
-export type Options = {
-  return?: ReturnType | "string" | "Date";
-  returnFormat?: string;
+export type OptionsType = {
+  return?: ReturnType;
   timeZone?: string;
   inputFormat?: string;
 };
+
+export type Options =
+  | OptionsType
+  | {
+      return: "string";
+      returnFormat: string | "12" | "24";
+      timeZone?: string;
+      inputFormat?: string;
+    };
 
 export type ScheduleOptions = Options & {
   addDynamicOffset?: boolean;

@@ -4,10 +4,10 @@ import { getTimezoneOffset } from "../utils/converters";
 import { Options, FunctionReturnType } from "../types";
 
 export class TimeZoned {
-  protected options: Partial<Options>;
+  protected options: Options;
   protected timezone = "UTC";
 
-  constructor(options?: Partial<Options>) {
+  constructor(options?: Options) {
     this.options = options || { return: "moment" };
     if (options?.timeZone && !isValidTimezone(options.timeZone)) {
       throw new Error(`Invalid timezone: ${options.timeZone}`);
@@ -23,7 +23,7 @@ export class TimeZoned {
    */
   utcToLocal(
     utcDate: Date | string | moment.Moment,
-    options: Partial<Options> = this.options
+    options: Options = this.options
   ): FunctionReturnType {
     const timezone = options?.timeZone || this.timezone;
     if (!isValidTimezone(timezone)) {
@@ -41,7 +41,7 @@ export class TimeZoned {
    */
   localToUtc(
     date: Date | string,
-    options: Partial<Options> = this.options
+    options: Options = this.options
   ): FunctionReturnType {
     const timezone = options.timeZone || this.timezone;
     if (!isValidTimezone(timezone)) {
@@ -57,9 +57,29 @@ export class TimeZoned {
     return this.handleReturn(momentObj, options);
   }
 
+  localTimeToUtc(
+    time: string,
+    options: Options = this.options
+  ): FunctionReturnType {
+    const timezone = options.timeZone || this.timezone;
+    if (!isValidTimezone(timezone)) {
+      throw new Error(`Invalid timezone: ${timezone}`);
+    }
+    const momentObj = moment.tz(time, "HH:mm:ss", timezone).utc();
+    return this.handleReturn(momentObj, options);
+  }
+
+  utcTimeToLocal(
+    time: string,
+    options: Options = this.options
+  ): FunctionReturnType {
+    const momentObj = moment.utc(time).tz(this.timezone);
+    return this.handleReturn(momentObj, options);
+  }
+
   protected handleReturn(
     momentObj: moment.Moment,
-    options: Partial<Options> = this.options
+    options: Options = this.options
   ): FunctionReturnType {
     switch (options?.return) {
       case "date":
@@ -69,7 +89,13 @@ export class TimeZoned {
       case "timestamp":
         return momentObj.format("YYYY-MM-DDTHH:mm:ss");
       case "string":
-        return momentObj.format(options?.returnFormat);
+        if (options?.returnFormat === "12") {
+          return momentObj.format("YYYY-MM-DDThh:mm:ss A");
+        } else if (options?.returnFormat === "24") {
+          return momentObj.format("YYYY-MM-DDTHH:mm:ss");
+        } else {
+          return momentObj.format(options?.returnFormat);
+        }
       case "Date":
         return momentObj.toDate();
       default:

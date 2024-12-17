@@ -3,7 +3,7 @@ import moment from "moment-timezone";
 import { TimeZoned } from "./TimeZoned";
 
 export class TimeZonedSchedule extends TimeZoned {
-  constructor(options: Partial<Options>) {
+  constructor(options: Options) {
     super(options);
   }
 
