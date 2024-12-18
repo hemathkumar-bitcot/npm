@@ -8,6 +8,9 @@ export {
   TimeUnit,
   FunctionReturnType,
   TimezoneValidation,
+  ReturnFormat,
+  ReturnType,
+  StringReturnOptions,
 } from './types'
 
 export * from './modules'

@@ -125,7 +125,7 @@ export class TimeZonedSchedule<T = moment.Moment> extends TimeZoned<T> {
     // returns the UTC offset in minutes
     const currentOffset = current.clone().utcOffset()
 
-    let date = current.clone()
+    const date = current.clone()
     if (isDstStart || isDstCurrent) {
       const diff = Math.abs(startOffset - currentOffset)
       if (isDstStart && !isDstCurrent) {
