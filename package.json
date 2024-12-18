@@ -5,11 +5,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run clean && npm run compile",
+    "clean": "rimraf dist",
+    "compile": "tsc",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "prepare": "npm run build",
+    "prepare": "husky",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "test:watch": "jest --watch"
@@ -39,5 +41,10 @@
   "license": "MIT",
   "dependencies": {
     "moment-timezone": "^0.5.46"
+  },
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs",
+    "types": "./dist/index.d.ts"
   }
 }
