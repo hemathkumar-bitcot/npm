@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 import { TimeZoned } from "./TimeZoned";
 import { Options, ScheduleOptions, TimezoneValidation } from "../types";
-export class TimeZonedSchedule extends TimeZoned {
+export class TimeZonedSchedule<T = moment.Moment> extends TimeZoned<T> {
   constructor(options: Options) {
     super(options);
   }
@@ -16,16 +16,16 @@ export class TimeZonedSchedule extends TimeZoned {
    *  if the start date is in non-DST and the end date is in DST, the date will be adjusted to the previous day
    *  -  2025-03-05T18:30:00.000Z
    *  -  2025-03-05T17:30:00.000Z(after adding offset adjustment of day light saving)
-   * @template T - The return type for the scheduled events
+   * @template R - The return type for the scheduled events
    */
-  public schedule<T extends FunctionReturnType = FunctionReturnType>(
+  public schedule<R = T>(
     start: DateType,
     end: DateType,
     options: ScheduleOptions = {
       type: "daily",
       addDynamicOffset: true,
     }
-  ): T[] {
+  ): R[] {
     const startDate = moment.utc(start);
     const endDate = moment.utc(end);
 
@@ -50,8 +50,8 @@ export class TimeZonedSchedule extends TimeZoned {
     }
 
     return events.map((event) =>
-      this.handleReturn(moment.utc(event), options)
-    ) as T[];
+      this.handleReturn<R>(moment.utc(event), options)
+    );
   }
 
   private dailyEvents(
