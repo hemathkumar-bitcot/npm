@@ -1,7 +1,8 @@
-import { TimeZonedSchedule } from "../../modules/TimeZonedSchedule";
+import { TimeZonedSchedule } from '../../modules'
 
-describe("TimeZonedSchedule for India", () => {
-  let tzs: TimeZonedSchedule;
+describe('TimeZonedSchedule for India', () => {
+  let tzs: TimeZonedSchedule
+
 
   beforeEach(() => {
     tzs = new TimeZonedSchedule({

@@ -1,9 +1,10 @@
-import moment from "moment-timezone";
-import { TimeZoned } from "./TimeZoned";
-import { Options, ScheduleOptions, TimezoneValidation } from "../types";
+import { TimeZoned } from './TimeZoned'
+import { Options, ScheduleOptions, TimezoneValidation } from '../types'
+import { moment } from '../utils'
+
 export class TimeZonedSchedule<T = moment.Moment> extends TimeZoned<T> {
   constructor(options: Options) {
-    super(options);
+    super(options)
   }
 
   /**
@@ -22,36 +23,29 @@ export class TimeZonedSchedule<T = moment.Moment> extends TimeZoned<T> {
     start: DateType,
     end: DateType,
     options: ScheduleOptions = {
-      type: "daily",
+      type: 'daily',
       addDynamicOffset: true,
     }
   ): R[] {
-    const startDate = moment.utc(start);
-    const endDate = moment.utc(end);
+    const startDate = moment.utc(start)
+    const endDate = moment.utc(end)
 
-    let events: Date[] = [];
-    if (options.type === "weekly") {
+    let events: Date[] = []
+    if (options.type === 'weekly') {
       events = this.weeklyEvents(
         startDate,
         endDate,
-        options.days.map((day) => day as number),
+        options.days.map(day => day as number),
         this.timezone,
         options
-      );
-    } else if (options.type === "monthly") {
-      events = this.monthlyEvents(
-        options.date,
-        startDate,
-        endDate,
-        this.timezone
-      );
+      )
+    } else if (options.type === 'monthly') {
+      events = this.monthlyEvents(options.date, startDate, endDate, this.timezone)
     } else {
-      events = this.dailyEvents(startDate, endDate, this.timezone, options);
+      events = this.dailyEvents(startDate, endDate, this.timezone, options)
     }
 
-    return events.map((event) =>
-      this.handleReturn<R>(moment.utc(event), options)
-    );
+    return events.map(event => this.handleReturn<R>(moment.utc(event), options))
   }
 
   private dailyEvents(
@@ -60,19 +54,17 @@ export class TimeZonedSchedule<T = moment.Moment> extends TimeZoned<T> {
     timezone: string,
     options: Partial<ScheduleOptions>
   ): Date[] {
-    const dates: Date[] = [];
-    const currentDate = startDate.clone();
+    const dates: Date[] = []
+    const currentDate = startDate.clone()
     while (currentDate.isSameOrBefore(endDate)) {
       if (options.addDynamicOffset) {
-        dates.push(
-          this.addDynamicOffset(startDate, currentDate, timezone).toDate()
-        );
+        dates.push(this.addDynamicOffset(startDate, currentDate, timezone).toDate())
       } else {
-        dates.push(currentDate.toDate());
+        dates.push(currentDate.toDate())
       }
-      currentDate.add(1, "day");
+      currentDate.add(1, 'day')
     }
-    return dates;
+    return dates
   }
 
   public weeklyEvents(
@@ -82,16 +74,16 @@ export class TimeZonedSchedule<T = moment.Moment> extends TimeZoned<T> {
     timezone: TimezoneValidation<string>,
     options: Partial<ScheduleOptions>
   ): Date[] {
-    const dates: Date[] = [];
+    const dates: Date[] = []
 
-    const ranges = this.dailyEvents(startDate, endDate, timezone, options);
+    const ranges = this.dailyEvents(startDate, endDate, timezone, options)
     for (const date of ranges) {
-      const day = moment.utc(date).tz(timezone).startOf("day").day();
+      const day = moment.utc(date).tz(timezone).startOf('day').day()
       if (days.includes(day)) {
-        dates.push(date);
+        dates.push(date)
       }
     }
-    return dates;
+    return dates
   }
 
   private monthlyEvents(
@@ -100,24 +92,22 @@ export class TimeZonedSchedule<T = moment.Moment> extends TimeZoned<T> {
     endDate: DateType,
     timezone: string
   ): Date[] {
-    const dates: Date[] = [];
-    const targetDay = moment(date).date();
-    const currentDate = moment(startDate).date(targetDay);
+    const dates: Date[] = []
+    const targetDay = moment(date).date()
+    const currentDate = moment(startDate).date(targetDay)
 
-    if (currentDate.isBefore(moment(startDate), "day")) {
-      currentDate.add(1, "month");
+    if (currentDate.isBefore(moment(startDate), 'day')) {
+      currentDate.add(1, 'month')
     }
 
     while (currentDate.isSameOrBefore(moment(endDate))) {
       if (currentDate.date() === targetDay) {
-        dates.push(
-          this.addDynamicOffset(startDate, currentDate, timezone).toDate()
-        );
+        dates.push(this.addDynamicOffset(startDate, currentDate, timezone).toDate())
       }
-      currentDate.add(1, "month").date(targetDay);
+      currentDate.add(1, 'month').date(targetDay)
     }
 
-    return dates;
+    return dates
   }
 
   private addDynamicOffset(
@@ -125,26 +115,26 @@ export class TimeZonedSchedule<T = moment.Moment> extends TimeZoned<T> {
     currentDate: moment.MomentInput,
     timezone: string
   ): moment.Moment {
-    const start = moment.utc(startDate).tz(timezone);
-    const isDstStart = start.clone().isDST();
+    const start = moment.utc(startDate).tz(timezone)
+    const isDstStart = start.clone().isDST()
     //   returns the UTC offset in minutes
-    const startOffset = start.clone().utcOffset();
+    const startOffset = start.clone().utcOffset()
 
-    const current = moment.utc(currentDate).tz(timezone);
-    const isDstCurrent = current.clone().isDST();
+    const current = moment.utc(currentDate).tz(timezone)
+    const isDstCurrent = current.clone().isDST()
     // returns the UTC offset in minutes
-    const currentOffset = current.clone().utcOffset();
+    const currentOffset = current.clone().utcOffset()
 
-    let date = current.clone();
+    let date = current.clone()
     if (isDstStart || isDstCurrent) {
-      const diff = Math.abs(startOffset - currentOffset);
+      const diff = Math.abs(startOffset - currentOffset)
       if (isDstStart && !isDstCurrent) {
-        date.add(diff, "minute");
+        date.add(diff, 'minute')
       } else if (!isDstStart && isDstCurrent) {
-        const diff = currentOffset - startOffset;
-        date.subtract(diff, "minute");
+        const diff = currentOffset - startOffset
+        date.subtract(diff, 'minute')
       }
     }
-    return date;
+    return date
   }
 }

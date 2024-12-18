@@ -1,7 +1,7 @@
 // ... previous test code ...
 
-import { TimeZoned } from "../../modules/TimeZoned";
-import moment from "moment-timezone";
+import { TimeZoned } from "../../modules";
+import { moment } from "../../utils";
 import { SetOptions, TimeUnit } from "../../types";
 
 describe("setDateTime Tests", () => {

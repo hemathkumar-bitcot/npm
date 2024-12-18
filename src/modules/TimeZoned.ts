@@ -1,21 +1,13 @@
-import moment from "moment-timezone";
-import { isValidTimezone } from "../utils/validators";
-import { getTimezoneOffset } from "../utils/converters";
-import {
-  TimezoneValidation,
-  TimeUnit,
-  SetOptions,
-  AddOptions,
-  Options,
-} from "../types";
+import { moment, isValidTimezone, getTimezoneOffset } from '../utils'
+import { TimezoneValidation, TimeUnit, SetOptions, AddOptions, Options } from '../types'
 
 /**
  * Class for handling timezone conversions and date/time manipulations
  * @class TimeZoned
  */
 export class TimeZoned<T = moment.Moment> {
-  protected options: Options;
-  protected timezone: TimezoneValidation = "UTC";
+  protected options: Options
+  protected timezone: TimezoneValidation = 'UTC'
 
   /**
    * Creates an instance of TimeZoned
@@ -25,12 +17,12 @@ export class TimeZoned<T = moment.Moment> {
    * @throws {Error} If provided timezone is invalid
    */
   constructor(options?: Options) {
-    this.options = options || { return: "moment" };
+    this.options = options || { return: 'moment' }
     if (options?.timeZone) {
       if (!isValidTimezone(options.timeZone)) {
-        throw new Error(`Invalid timezone: ${options.timeZone}`);
+        throw new Error(`Invalid timezone: ${options.timeZone}`)
       }
-      this.timezone = options.timeZone as TimezoneValidation;
+      this.timezone = options.timeZone as TimezoneValidation
     }
   }
 
@@ -45,15 +37,12 @@ export class TimeZoned<T = moment.Moment> {
    * @throws {Error} If timezone is invalid
    */
   utcToLocal<R = T>(utcDate: DateType, options: Options = this.options): R {
-    const timezone = options?.timeZone || this.timezone;
+    const timezone = options?.timeZone || this.timezone
     if (!isValidTimezone(timezone)) {
-      throw new Error(`Invalid timezone: ${timezone}`);
+      throw new Error(`Invalid timezone: ${timezone}`)
     }
-    const inputFormat = options?.inputFormat || "YYYY-MM-DDTHH:mm:ss";
-    return this.handleReturn(
-      moment.utc(utcDate, inputFormat).tz(timezone),
-      options
-    ) as R;
+    const inputFormat = options?.inputFormat || 'YYYY-MM-DDTHH:mm:ss'
+    return this.handleReturn(moment.utc(utcDate, inputFormat).tz(timezone), options) as R
   }
 
   /**
@@ -67,19 +56,17 @@ export class TimeZoned<T = moment.Moment> {
    * @throws {Error} If timezone is invalid
    */
   localToUtc<R = T>(date: Date | string, options: Options = this.options): R {
-    const timezone = options.timeZone || this.timezone;
+    const timezone = options.timeZone || this.timezone
     if (!isValidTimezone(timezone)) {
-      throw new Error(`Invalid timezone: ${timezone}`);
+      throw new Error(`Invalid timezone: ${timezone}`)
     }
 
     const momentObj =
-      typeof date === "string" && options?.inputFormat
-        ? moment
-            .tz(date, options.inputFormat || "YYYY-MM-DDTHH:mm:ss", timezone)
-            .utc()
-        : moment.tz(date, timezone).utc();
+      typeof date === 'string' && options?.inputFormat
+        ? moment.tz(date, options.inputFormat || 'YYYY-MM-DDTHH:mm:ss', timezone).utc()
+        : moment.tz(date, timezone).utc()
 
-    return this.handleReturn(momentObj, options) as R;
+    return this.handleReturn(momentObj, options) as R
   }
 
   /**
@@ -95,26 +82,22 @@ export class TimeZoned<T = moment.Moment> {
     date: DateType,
     amount: string | number,
     unit: TimeUnit,
-    type: "local" | "utc",
+    type: 'local' | 'utc',
     options: SetOptions = this.options as SetOptions
   ): R {
-    const momentObj =
-      type === "local" ? moment.tz(date, this.timezone) : moment.utc(date);
+    const momentObj = type === 'local' ? moment.tz(date, this.timezone) : moment.utc(date)
 
-    const setObj: Record<string, number> = {};
+    const setObj: Record<string, number> = {}
 
-    if (typeof amount === "string" && unit.includes(":")) {
-      const [hours, minutes, seconds] = amount.split(":").map(Number);
-      Object.assign(setObj, { hours, minutes, ...(seconds && { seconds }) });
+    if (typeof amount === 'string' && unit.includes(':')) {
+      const [hours, minutes, seconds] = amount.split(':').map(Number)
+      Object.assign(setObj, { hours, minutes, ...(seconds && { seconds }) })
     } else {
-      const value = Number(amount);
-      setObj[unit] = value;
+      const value = Number(amount)
+      setObj[unit] = value
     }
 
-    return this.handleReturn(
-      momentObj.startOf("day").set(setObj),
-      options
-    ) as R;
+    return this.handleReturn(momentObj.startOf('day').set(setObj), options) as R
   }
 
   /**
@@ -131,44 +114,29 @@ export class TimeZoned<T = moment.Moment> {
     date: DateType,
     amount: string | number,
     unit: TimeUnit,
-    type: "local" | "utc",
-    from:
-      | "startOfDay"
-      | "endOfDay"
-      | "startOfMonth"
-      | "endOfMonth"
-      | "startOfYear"
-      | "endOfYear",
+    type: 'local' | 'utc',
+    from: 'startOfDay' | 'endOfDay' | 'startOfMonth' | 'endOfMonth' | 'startOfYear' | 'endOfYear',
     options: AddOptions = this.options as AddOptions
   ): R {
-    let momentObj =
-      type === "local" ? moment.tz(date, this.timezone) : moment.utc(date);
+    let momentObj = type === 'local' ? moment.tz(date, this.timezone) : moment.utc(date)
 
     momentObj = momentObj.startOf(
-      from
-        .replace(/^(start|end)Of/, "")
-        .toLowerCase() as moment.unitOfTime.StartOf
-    );
-    if (from.startsWith("end")) {
+      from.replace(/^(start|end)Of/, '').toLowerCase() as moment.unitOfTime.StartOf
+    )
+    if (from.startsWith('end')) {
       momentObj = momentObj.endOf(
-        from.replace("endOf", "").toLowerCase() as moment.unitOfTime.StartOf
-      );
+        from.replace('endOf', '').toLowerCase() as moment.unitOfTime.StartOf
+      )
     }
 
-    if (typeof amount === "string" && amount.includes(":")) {
-      const [hours, minutes, seconds = 0] = amount.split(":").map(Number);
-      momentObj = momentObj
-        .add(hours, "hours")
-        .add(minutes, "minutes")
-        .add(seconds, "seconds");
-    } else if (typeof amount === "number") {
-      momentObj = momentObj.add(
-        amount,
-        unit as moment.unitOfTime.DurationConstructor
-      );
+    if (typeof amount === 'string' && amount.includes(':')) {
+      const [hours, minutes, seconds = 0] = amount.split(':').map(Number)
+      momentObj = momentObj.add(hours, 'hours').add(minutes, 'minutes').add(seconds, 'seconds')
+    } else if (typeof amount === 'number') {
+      momentObj = momentObj.add(amount, unit as moment.unitOfTime.DurationConstructor)
     }
 
-    return this.handleReturn(momentObj, options) as R;
+    return this.handleReturn(momentObj, options) as R
   }
 
   /**
@@ -177,32 +145,27 @@ export class TimeZoned<T = moment.Moment> {
    * @param {Options} [options] - Format options
    * @returns {T} Formatted date/time
    */
-  protected handleReturn<R = T>(
-    momentObj: moment.Moment,
-    options: Options = this.options
-  ): R {
+  protected handleReturn<R = T>(momentObj: moment.Moment, options: Options = this.options): R {
     const format = {
-      date: "YYYY-MM-DD",
-      time: "HH:mm:ss",
-      timestamp: "YYYY-MM-DDTHH:mm:ss",
-      "12": "YYYY-MM-DDThh:mm:ss A",
-      "24": "YYYY-MM-DDTHH:mm:ss",
-    };
+      date: 'YYYY-MM-DD',
+      time: 'HH:mm:ss',
+      timestamp: 'YYYY-MM-DDTHH:mm:ss',
+      '12': 'YYYY-MM-DDThh:mm:ss A',
+      '24': 'YYYY-MM-DDTHH:mm:ss',
+    }
 
-    if (options?.return === "Date") return momentObj.toDate() as R;
-    if (options?.return === "string" && options.returnFormat) {
+    if (options?.return === 'Date') return momentObj.toDate() as R
+    if (options?.return === 'string' && options.returnFormat) {
       return momentObj.format(
         options.returnFormat in format
           ? format[options.returnFormat as keyof typeof format]
           : options.returnFormat
-      ) as R;
+      ) as R
     }
     if (options?.return && options.return in format) {
-      return momentObj.format(
-        format[options.return as keyof typeof format]
-      ) as R;
+      return momentObj.format(format[options.return as keyof typeof format]) as R
     }
-    return momentObj as R;
+    return momentObj as R
   }
 
   /**
@@ -210,12 +173,12 @@ export class TimeZoned<T = moment.Moment> {
    * @param {string} timezone - Timezone to check
    * @returns {number} Offset in hours (e.g., +5.5 for India)
    */
-  getTimezoneOffset = getTimezoneOffset;
+  getTimezoneOffset = getTimezoneOffset
 
   /**
    * Checks if a timezone name is valid
    * @param {string} timezone - Timezone to validate
    * @returns {boolean} Whether timezone is valid
    */
-  isValidTimezone = isValidTimezone;
+  isValidTimezone = isValidTimezone
 }
