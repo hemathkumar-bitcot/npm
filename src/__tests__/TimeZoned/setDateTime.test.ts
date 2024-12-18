@@ -2,7 +2,7 @@
 
 import { TimeZoned } from "../../modules/TimeZoned";
 import moment from "moment-timezone";
-import { Options, SetOptions } from "../../types";
+import { SetOptions, TimeUnit } from "../../types";
 
 describe("setDateTime Tests", () => {
   let tz: TimeZoned;
@@ -197,7 +197,7 @@ describe("setDateTime Tests", () => {
         const result = tz.setDateTime(
           date,
           amount,
-          unit,
+          unit as TimeUnit,
           type as "local" | "utc",
           options as SetOptions
         );

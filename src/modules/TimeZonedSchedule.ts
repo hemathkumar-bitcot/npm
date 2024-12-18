@@ -1,7 +1,6 @@
-import { DateType, Options, ScheduleOptions } from "../types";
 import moment from "moment-timezone";
 import { TimeZoned } from "./TimeZoned";
-
+import { Options, ScheduleOptions, TimezoneValidation } from "../types";
 export class TimeZonedSchedule extends TimeZoned {
   constructor(options: Options) {
     super(options);
@@ -25,7 +24,7 @@ export class TimeZonedSchedule extends TimeZoned {
       type: "daily",
       addDynamicOffset: true,
     }
-  ): (Date | string | moment.Moment)[] {
+  ): FunctionReturnType[] {
     const startDate = moment.utc(start);
     const endDate = moment.utc(end);
 
@@ -77,7 +76,7 @@ export class TimeZonedSchedule extends TimeZoned {
     startDate: moment.Moment,
     endDate: moment.Moment,
     days: number[],
-    timezone: string,
+    timezone: TimezoneValidation<string>,
     options: Partial<ScheduleOptions>
   ): Date[] {
     const dates: Date[] = [];

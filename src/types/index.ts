@@ -1,58 +1,87 @@
+import moment from "moment-timezone";
+
+// Base types
+export type DateType = Date | string | moment.Moment;
+
 export type TimeZoneOptions = {
   format?: string;
   strictParsing?: boolean;
   locale?: string;
 };
 
-export type DateType = Date | string | moment.Moment;
+// Return type literals
+export type ReturnType = "date" | "moment" | "timestamp" | "time" | "Date";
+export type ReturnFormat = string | "12" | "24";
 
-export type OptionsType = {
-  return?: ReturnType;
+// Function return types
+export type FunctionReturnType = string | moment.Moment | Date;
+
+// Schedule types
+type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+type BaseScheduleType = {
+  addDynamicOffset?: boolean;
+};
+
+type DailySchedule = BaseScheduleType & {
+  type: "daily";
+};
+
+type WeeklySchedule = BaseScheduleType & {
+  type: "weekly";
+  days: DayOfWeek[];
+};
+
+type MonthlySchedule = BaseScheduleType & {
+  type: "monthly";
+  date: DateType;
+};
+
+export type ScheduleOptions = Options & (DailySchedule | WeeklySchedule | MonthlySchedule);
+
+// Options types
+type BaseOptionsType = {
   timeZone?: string;
   inputFormat?: string;
 };
 
-export type Options =
-  | OptionsType
-  | {
-      return: "string";
-      returnFormat: string | "12" | "24";
-      timeZone?: string;
-      inputFormat?: string | "HH:mm:ss";
-    };
+export type StringReturnOptions = BaseOptionsType & {
+  return: "string";
+  returnFormat: ReturnFormat;
+};
 
-export type SetOptions =
-  | {
-      return: "string";
-      returnFormat: string | "12" | "24";
-      timeZone?: string;
-    }
-  | {
-      return: ReturnType;
-      timeZone?: string;
-    };
+type OtherReturnOptions = BaseOptionsType & {
+  return: ReturnType;
+};
 
+export type SetOptions = StringReturnOptions | OtherReturnOptions;
 export type AddOptions = SetOptions;
 
-export type ScheduleOptions = Options & {
-  addDynamicOffset?: boolean;
-} & (
-    | {
-        type: "weekly";
-        days: (
-          | 0 // Sunday
-          | 1 // Monday
-          | 2 // Tuesday
-          | 3 // Wednesday
-          | 4 // Thursday
-          | 5 // Friday
-          | 6
-        )[]; // Saturday
-      }
-    | { type: "monthly"; date: DateType }
-    | { type: "daily" }
-  );
+type BaseOptions = BaseOptionsType & {
+  return?: ReturnType;
+};
 
-export type ReturnType = "date" | "moment" | "timestamp" | "time" | "Date";
+type StringFormatOptions = BaseOptionsType & {
+  return: "string";
+  returnFormat: ReturnFormat;
+  inputFormat?: string | "HH:mm:ss";
+};
 
-export type FunctionReturnType = string | moment.Moment | Date;
+export type Options = BaseOptions | StringFormatOptions;
+
+// Utility types
+export type TimezoneValidation<T extends string = string> = T extends keyof typeof moment.tz
+  ? T
+  : string;
+
+export type TimeUnit = 
+  | "year" 
+  | "month" 
+  | "day" 
+  | "hour" 
+  | "minute" 
+  | "second" 
+  | "millisecond"
+  | "HH:mm:ss"
+  | "HH:mm";
+

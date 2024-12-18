@@ -9,8 +9,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src", "__tests__"],
+  "include": ["src/**/*", "src/types/global.d.ts"],
   "exclude": ["node_modules", "**/__tests__/*"]
 }

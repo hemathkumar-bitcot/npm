@@ -1,6 +1,5 @@
 import { TimeZoned } from "../../modules/TimeZoned";
-import moment from "moment-timezone";
-import { AddOptions, Options } from "../../types";
+import { AddOptions, DateType, TimeUnit } from "../../types";
 
 describe("addDateTime Tests", () => {
   let tz: TimeZoned;
@@ -10,7 +9,22 @@ describe("addDateTime Tests", () => {
     tz = new TimeZoned({ timeZone: "UTC" });
   });
 
-  const testCases = [
+  const testCases: Array<{
+    description: string;
+    date: DateType;
+    amount: string | number;
+    unit: TimeUnit;
+    type: "local" | "utc";
+    options: AddOptions;
+    expected: string;
+    from:
+      | "startOfDay"
+      | "endOfDay"
+      | "startOfMonth"
+      | "endOfMonth"
+      | "startOfYear"
+      | "endOfYear";
+  }> = [
     {
       description: "should add time in HH:mm:ss format from startOfDay",
       date: "2024-01-01T00:00:00",
