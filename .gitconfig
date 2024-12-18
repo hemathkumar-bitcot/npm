@@ -1,0 +1,13 @@
+[init]
+    defaultBranch = main
+
+[branch]
+    autoSetupMerge = true
+    autoSetupRebase = always
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+    default = current
