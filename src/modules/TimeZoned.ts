@@ -13,7 +13,7 @@ import {
  * Class for handling timezone conversions and date/time manipulations
  * @class TimeZoned
  */
-export class TimeZoned {
+export class TimeZoned<T = moment.Moment> {
   protected options: Options;
   protected timezone: TimezoneValidation = "UTC";
 
@@ -41,13 +41,10 @@ export class TimeZoned {
    * @param {string} [options.timeZone] - Target timezone
    * @param {string} [options.inputFormat] - Input date format
    * @param {string} [options.returnFormat] - Return format
-   * @returns {FunctionReturnType} Converted local time
+   * @returns {T} Converted local time
    * @throws {Error} If timezone is invalid
    */
-  utcToLocal(
-    utcDate: DateType,
-    options: Options = this.options
-  ): FunctionReturnType {
+  utcToLocal<R = T>(utcDate: DateType, options: Options = this.options): R {
     const timezone = options?.timeZone || this.timezone;
     if (!isValidTimezone(timezone)) {
       throw new Error(`Invalid timezone: ${timezone}`);
@@ -56,7 +53,7 @@ export class TimeZoned {
     return this.handleReturn(
       moment.utc(utcDate, inputFormat).tz(timezone),
       options
-    );
+    ) as R;
   }
 
   /**
@@ -66,13 +63,10 @@ export class TimeZoned {
    * @param {string} [options.timeZone] - Source timezone
    * @param {string} [options.inputFormat] - Input date format
    * @param {string} [options.returnFormat] - Return format
-   * @returns {FunctionReturnType} Converted UTC time
+   * @returns {T} Converted UTC time
    * @throws {Error} If timezone is invalid
    */
-  localToUtc(
-    date: Date | string,
-    options: Options = this.options
-  ): FunctionReturnType {
+  localToUtc<R = T>(date: Date | string, options: Options = this.options): R {
     const timezone = options.timeZone || this.timezone;
     if (!isValidTimezone(timezone)) {
       throw new Error(`Invalid timezone: ${timezone}`);
@@ -85,7 +79,7 @@ export class TimeZoned {
             .utc()
         : moment.tz(date, timezone).utc();
 
-    return this.handleReturn(momentObj, options);
+    return this.handleReturn(momentObj, options) as R;
   }
 
   /**
@@ -95,15 +89,15 @@ export class TimeZoned {
    * @param {string} unit - Unit to set (HH:mm:ss, HH:mm, etc)
    * @param {"local" | "utc"} type - Time type
    * @param {SetOptions} [options] - Additional options
-   * @returns {FunctionReturnType} Modified date
+   * @returns {T} Modified date
    */
-  setDateTime(
+  setDateTime<R = T>(
     date: DateType,
     amount: string | number,
     unit: TimeUnit,
     type: "local" | "utc",
     options: SetOptions = this.options as SetOptions
-  ): FunctionReturnType {
+  ): R {
     const momentObj =
       type === "local" ? moment.tz(date, this.timezone) : moment.utc(date);
 
@@ -117,7 +111,10 @@ export class TimeZoned {
       setObj[unit] = value;
     }
 
-    return this.handleReturn(momentObj.startOf("day").set(setObj), options);
+    return this.handleReturn(
+      momentObj.startOf("day").set(setObj),
+      options
+    ) as R;
   }
 
   /**
@@ -128,9 +125,9 @@ export class TimeZoned {
    * @param {"local" | "utc"} type - Time type
    * @param {string} from - Starting point
    * @param {AddOptions} [options] - Additional options
-   * @returns {FunctionReturnType} Modified date
+   * @returns {T} Modified date
    */
-  addDateTime(
+  addDateTime<R = T>(
     date: DateType,
     amount: string | number,
     unit: TimeUnit,
@@ -143,7 +140,7 @@ export class TimeZoned {
       | "startOfYear"
       | "endOfYear",
     options: AddOptions = this.options as AddOptions
-  ): FunctionReturnType {
+  ): R {
     let momentObj =
       type === "local" ? moment.tz(date, this.timezone) : moment.utc(date);
 
@@ -171,19 +168,19 @@ export class TimeZoned {
       );
     }
 
-    return this.handleReturn(momentObj, options);
+    return this.handleReturn(momentObj, options) as R;
   }
 
   /**
    * Formats moment object according to options
    * @param {moment.Moment} momentObj - Moment object to format
    * @param {Options} [options] - Format options
-   * @returns {FunctionReturnType} Formatted date/time
+   * @returns {T} Formatted date/time
    */
-  protected handleReturn(
+  protected handleReturn<R = T>(
     momentObj: moment.Moment,
     options: Options = this.options
-  ): FunctionReturnType {
+  ): R {
     const format = {
       date: "YYYY-MM-DD",
       time: "HH:mm:ss",
@@ -192,18 +189,20 @@ export class TimeZoned {
       "24": "YYYY-MM-DDTHH:mm:ss",
     };
 
-    if (options?.return === "Date") return momentObj.toDate();
+    if (options?.return === "Date") return momentObj.toDate() as R;
     if (options?.return === "string" && options.returnFormat) {
       return momentObj.format(
         options.returnFormat in format
           ? format[options.returnFormat as keyof typeof format]
           : options.returnFormat
-      );
+      ) as R;
     }
     if (options?.return && options.return in format) {
-      return momentObj.format(format[options.return as keyof typeof format]);
+      return momentObj.format(
+        format[options.return as keyof typeof format]
+      ) as R;
     }
-    return momentObj;
+    return momentObj as R;
   }
 
   /**
