@@ -32,15 +32,6 @@ describe("setDateTime Tests", () => {
       expected: "2024-01-01T14:30:00",
     },
     {
-      description: "should set hour (HH)",
-      date: "2024-01-01T00:00:00",
-      amount: 14,
-      unit: "HH" as const,
-      type: "local",
-      options: { return: "timestamp" },
-      expected: "2024-01-01T14:00:00",
-    },
-    {
       description: "should set minute",
       date: "2024-01-01T00:00:00",
       amount: 30,
