@@ -1,5 +1,5 @@
 {
-  "name": "extensions",
+  "name": "boosters",
   "version": "0.1.0",
   "description": "A TypeScript package for timezone management, push notifications, and additional utilities",
   "main": "dist/index.js",

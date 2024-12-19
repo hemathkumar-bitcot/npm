@@ -1,13 +1,14 @@
-# Extensions: A Comprehensive Utility Library
+# Boosters: A Comprehensive Utility Library
 
 A versatile JavaScript/TypeScript library offering a suite of utilities including timezone management, Firebase Cloud Messaging (FCM), and more.
 
-[![npm version](https://badge.fury.io/js/extensions.svg)](https://badge.fury.io/js/extensions)
+[![npm version](https://badge.fury.io/js/boosters.svg)](https://badge.fury.io/js/boosters)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Core Features
 
 ### Timezone Management
+
 - 🌍 Convert between UTC and local timezones with precision
 - 📅 Schedule recurring events (daily, weekly, monthly) with timezone awareness
 - 🕒 Smart handling of daylight saving time (DST) transitions
@@ -15,12 +16,14 @@ A versatile JavaScript/TypeScript library offering a suite of utilities includin
 - ✅ Comprehensive timezone validation and offset calculations
 
 ### Firebase Cloud Messaging
+
 - 🔔 Integrated push notification system
 - 🔒 Secure Firebase authentication
 - 📦 Configurable notification payload
 - 🌐 Cross-platform message delivery
 
 ### Additional Utilities
+
 - 📊 Data manipulation tools
 - 🔧 Configuration management
 - 🛠 Helper functions for common tasks
@@ -30,51 +33,43 @@ A versatile JavaScript/TypeScript library offering a suite of utilities includin
 ### Timezone Scheduling
 
 ```typescript
-import { TimeZoned } from "timezoned";
+import { TimeZoned } from 'boosters'
 
 // Initialize with options
 const tz = new TimeZoned({
-  timeZone: "America/New_York",
-  return: "string",
-});
+  timeZone: 'America/New_York',
+  return: 'string',
+})
 
 // Convert UTC to local time
-const localTime = tz.utcToLocal("2024-03-20T14:30:00Z");
+const localTime = tz.utcToLocal('2024-03-20T14:30:00Z')
 
 // Convert local to UTC time
-const utcTime = tz.localToUtc("2024-03-20T10:30:00");
+const utcTime = tz.localToUtc('2024-03-20T10:30:00')
 ```
 
 ## Scheduling Example
 
 ```typescript
-import { TimeZonedSchedule } from "timezoned";
+import { TimeZonedSchedule } from 'boosters'
 
 const scheduler = new TimeZonedSchedule({
-  timeZone: "Asia/Tokyo",
-  return: "moment",
-});
+  timeZone: 'Asia/Tokyo',
+  return: 'moment',
+})
 
 // Create daily schedule
-const dailyEvents = scheduler.schedule(
-  "2024-03-20T00:00:00Z",
-  "2024-03-25T00:00:00Z",
-  {
-    type: "daily",
-    addDynamicOffset: true,
-  }
-);
+const dailyEvents = scheduler.schedule('2024-03-20T00:00:00Z', '2024-03-25T00:00:00Z', {
+  type: 'daily',
+  addDynamicOffset: true,
+})
 
 // Create weekly schedule
-const weeklyEvents = scheduler.schedule(
-  "2024-03-20T00:00:00Z",
-  "2024-04-20T00:00:00Z",
-  {
-    type: "weekly",
-    days: [1, 3, 5], // Monday, Wednesday, Friday
-    addDynamicOffset: true,
-  }
-);
+const weeklyEvents = scheduler.schedule('2024-03-20T00:00:00Z', '2024-04-20T00:00:00Z', {
+  type: 'weekly',
+  days: [1, 3, 5], // Monday, Wednesday, Friday
+  addDynamicOffset: true,
+})
 ```
 
 ## API Reference
@@ -143,21 +138,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Firebase Cloud Messaging (FCM) Integration
 
 ### Installation
+
 ```bash
-npm install extensions
+npm install boosters
 ```
 
 ### FCM Notification Service
 
 ```typescript
-import { FirebaseService } from 'extensions/firebase'
+import { FCMService } from 'boosters'
 
-const firebase = new FirebaseService({
+const firebase = new FCMService({
   projectId: process.env.FIREBASE_PROJECT_ID,
   privateKeyId: process.env.FIREBASE_PRIVATE_KEY_ID,
   privateKey: process.env.FIREBASE_PRIVATE_KEY,
   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  clientId: process.env.FIREBASE_CLIENT_ID
+  clientId: process.env.FIREBASE_CLIENT_ID,
 })
 
 await firebase.sendPushNotification(
@@ -171,33 +167,38 @@ await firebase.sendPushNotification(
 ### FCM Configuration Options
 
 #### FirebaseConfig Interface
+
 ```typescript
 interface FirebaseConfig {
-  projectId: string        // Firebase project ID
-  privateKeyId: string     // Private key identifier
-  privateKey: string       // Private key for authentication
-  clientEmail: string      // Service account client email
-  clientId: string         // Service account client ID
+  projectId: string // Firebase project ID
+  privateKeyId: string // Private key identifier
+  privateKey: string // Private key for authentication
+  clientEmail: string // Service account client email
+  clientId: string // Service account client ID
 }
 ```
 
 ### Features
+
 - 🔔 Simple push notification sending
 - 🔒 Secure authentication with Google Auth
 - 📦 Minimal configuration required
 - 🌐 Supports additional notification data
 
 ### Error Handling
+
 - Validates Firebase configuration
 - Provides detailed error logging
 - Handles authentication and network errors
 
 ### Best Practices
+
 - Store credentials securely in environment variables
 - Use service account with minimal required permissions
 - Implement proper error catching and logging
 
 ### Limitations
+
 - Requires valid Firebase project configuration
 - Depends on Firebase Cloud Messaging service
 - Network connectivity required for sending notifications
