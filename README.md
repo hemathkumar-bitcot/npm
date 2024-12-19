@@ -202,3 +202,47 @@ interface FirebaseConfig {
 - Requires valid Firebase project configuration
 - Depends on Firebase Cloud Messaging service
 - Network connectivity required for sending notifications
+
+## Documentation
+- [Timezone Management](docs/timezone.md)
+- [Event Scheduling](docs/scheduling.md)
+- [FCM Integration](docs/fcm.md)
+- [Utilities](docs/utilities.md)
+
+## Features in Detail
+- Timezone-aware scheduling
+- DST transition handling
+- Multiple schedule types (daily, weekly, monthly)
+- Push notification integration
+- Secure Firebase authentication
+- Flexible notification payload
+- Comprehensive error handling
+- Additional utility functions
+
+## Best Practices
+- Use environment variables for Firebase credentials
+- Implement proper error handling
+- Follow timezone-specific guidelines
+- Monitor FCM delivery status
+
+## Limitations
+- Requires valid timezone data
+- Firebase project configuration needed for FCM
+- Network dependency for notifications
+
+## Support
+For issues and feature requests, please use our [GitHub issue tracker](https://github.com/yourusername/plugins/issues).
+
+## [Contributing](CONTRIBUTING.md)
+We welcome contributions! Please follow these steps to contribute:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+For more details, see our [Contribution Guidelines](CONTRIBUTING.md).
+
+## License
+MIT License
