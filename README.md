@@ -1,28 +1,33 @@
-# TimeZoned
+# Extensions: A Comprehensive Utility Library
 
-A powerful and flexible JavaScript/TypeScript library for handling timezone conversions, date/time manipulations, and scheduling with timezone awareness.
+A versatile JavaScript/TypeScript library offering a suite of utilities including timezone management, Firebase Cloud Messaging (FCM), and more.
 
-[![npm version](https://badge.fury.io/js/timezoned.svg)](https://badge.fury.io/js/timezoned)
+[![npm version](https://badge.fury.io/js/extensions.svg)](https://badge.fury.io/js/extensions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+## Core Features
 
+### Timezone Management
 - 🌍 Convert between UTC and local timezones with precision
 - 📅 Schedule recurring events (daily, weekly, monthly) with timezone awareness
 - 🕒 Smart handling of daylight saving time (DST) transitions
 - 🔄 Multiple date/time format options (12/24hr, custom formats)
 - ✅ Comprehensive timezone validation and offset calculations
-- 📘 Full TypeScript support with detailed type definitions
 
-## Installation
+### Firebase Cloud Messaging
+- 🔔 Integrated push notification system
+- 🔒 Secure Firebase authentication
+- 📦 Configurable notification payload
+- 🌐 Cross-platform message delivery
 
-```bash
-npm install timezoned
-# or
-yarn add timezoned
-```
+### Additional Utilities
+- 📊 Data manipulation tools
+- 🔧 Configuration management
+- 🛠 Helper functions for common tasks
 
 ## Quick Start
+
+### Timezone Scheduling
 
 ```typescript
 import { TimeZoned } from "timezoned";
@@ -47,7 +52,7 @@ import { TimeZonedSchedule } from "timezoned";
 
 const scheduler = new TimeZonedSchedule({
   timeZone: "Asia/Tokyo",
-  return: "string",
+  return: "moment",
 });
 
 // Create daily schedule
@@ -134,3 +139,65 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Firebase Cloud Messaging (FCM) Integration
+
+### Installation
+```bash
+npm install extensions
+```
+
+### FCM Notification Service
+
+```typescript
+import { FirebaseService } from 'extensions/firebase'
+
+const firebase = new FirebaseService({
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  privateKeyId: process.env.FIREBASE_PRIVATE_KEY_ID,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  clientId: process.env.FIREBASE_CLIENT_ID
+})
+
+await firebase.sendPushNotification(
+  'device-token',
+  'Event Scheduled',
+  'Your next event is scheduled for tomorrow',
+  { eventId: '123' }
+)
+```
+
+### FCM Configuration Options
+
+#### FirebaseConfig Interface
+```typescript
+interface FirebaseConfig {
+  projectId: string        // Firebase project ID
+  privateKeyId: string     // Private key identifier
+  privateKey: string       // Private key for authentication
+  clientEmail: string      // Service account client email
+  clientId: string         // Service account client ID
+}
+```
+
+### Features
+- 🔔 Simple push notification sending
+- 🔒 Secure authentication with Google Auth
+- 📦 Minimal configuration required
+- 🌐 Supports additional notification data
+
+### Error Handling
+- Validates Firebase configuration
+- Provides detailed error logging
+- Handles authentication and network errors
+
+### Best Practices
+- Store credentials securely in environment variables
+- Use service account with minimal required permissions
+- Implement proper error catching and logging
+
+### Limitations
+- Requires valid Firebase project configuration
+- Depends on Firebase Cloud Messaging service
+- Network connectivity required for sending notifications

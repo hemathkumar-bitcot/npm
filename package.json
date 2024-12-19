@@ -1,7 +1,7 @@
 {
-  "name": "timezoned",
+  "name": "extensions",
   "version": "0.1.0",
-  "description": "A TypeScript package for handling timezones",
+  "description": "A TypeScript package for timezone management, push notifications, and additional utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "private": true,
@@ -12,7 +12,7 @@
     "test": "jest",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "prepare": "husky",
+    "prepare": "husky install",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "test:watch": "jest --watch"
@@ -21,7 +21,12 @@
     "timezone",
     "date",
     "time",
-    "conversion"
+    "conversion",
+    "firebase",
+    "fcm",
+    "notifications",
+    "utilities",
+    "typescript"
   ],
   "devDependencies": {
     "@types/jest": "^29.5.0",
