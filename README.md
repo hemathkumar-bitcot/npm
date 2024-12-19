@@ -204,12 +204,14 @@ interface FirebaseConfig {
 - Network connectivity required for sending notifications
 
 ## Documentation
+
 - [Timezone Management](docs/timezone.md)
 - [Event Scheduling](docs/scheduling.md)
 - [FCM Integration](docs/fcm.md)
 - [Utilities](docs/utilities.md)
 
 ## Features in Detail
+
 - Timezone-aware scheduling
 - DST transition handling
 - Multiple schedule types (daily, weekly, monthly)
@@ -220,20 +222,24 @@ interface FirebaseConfig {
 - Additional utility functions
 
 ## Best Practices
+
 - Use environment variables for Firebase credentials
 - Implement proper error handling
 - Follow timezone-specific guidelines
 - Monitor FCM delivery status
 
 ## Limitations
+
 - Requires valid timezone data
 - Firebase project configuration needed for FCM
 - Network dependency for notifications
 
 ## Support
-For issues and feature requests, please use our [GitHub issue tracker](https://github.com/yourusername/plugins/issues).
+
+For issues and feature requests, please use our [GitHub issue tracker](https://github.com/yourusername/boosters/issues).
 
 ## [Contributing](CONTRIBUTING.md)
+
 We welcome contributions! Please follow these steps to contribute:
 
 1. Fork the repository
@@ -245,4 +251,5 @@ We welcome contributions! Please follow these steps to contribute:
 For more details, see our [Contribution Guidelines](CONTRIBUTING.md).
 
 ## License
+
 MIT License
